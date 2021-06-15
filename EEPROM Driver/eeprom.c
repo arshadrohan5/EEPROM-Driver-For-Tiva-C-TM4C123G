@@ -71,16 +71,18 @@ void eeprom_init(void)
 		eeprom_error_recovery();
 }
 
-void eeprom_write(int data,uint8_t addr)
+void eeprom_write(int data,uint8_t addr,uint8_t blk)
 {
-	EEPROM_EEOFFSET_R =  addr; //offset
+	EEPROM_EEBLOCK_R = blk;//Block number
+	EEPROM_EEOFFSET_R =  addr; //offset within the block
 	EEPROM_EERDWR_R = data; //data written 
 	while(EEPROM_EEDONE_R & EEPROM_EEDONE_WORKING);
 }
 
-int eeprom_read(uint8_t addr)
+int eeprom_read(uint8_t addr,uint8_t blk)
 {
 	int data;
+	EEPROM_EEBLOCK_R = blk;//Block number
 	EEPROM_EEOFFSET_R =  addr;
 	data = EEPROM_EERDWR_R;
 	while(EEPROM_EEDONE_R & EEPROM_EEDONE_WORKING);
